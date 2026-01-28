@@ -65,12 +65,48 @@ small { color:#555 }
     border-radius:4px;
     font-size:12px;
 }
+
+<div id="loginBox" style="
+    max-width:400px;
+    margin:120px auto;
+    background:#fff;
+    padding:25px;
+    border-radius:8px;
+    box-shadow:0 2px 10px rgba(0,0,0,.15)
+">
+    <h3 style="color:#1F4E8C">Acesso restrito</h3>
+
+    <label>Usuário</label><br>
+    <input type="text" id="loginUser" style="width:100%"><br><br>
+
+    <label>Senha</label><br>
+    <input type="password" id="loginPass" style="width:100%"><br><br>
+
+    <button onclick="login()" style="width:100%">Entrar</button>
+
+    <div id="loginErro" style="color:#900;margin-top:10px"></div>
+</div>
+
+
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="container" id="app" style="display:none">
+
+<button onclick="logout()" style="
+        float:right;
+        background:#900;
+        color:#fff;
+        border:none;
+        padding:6px 12px;
+        border-radius:4px;
+        cursor:pointer;
+    ">
+        Sair
+    </button>
+
     <h2>Consulta de NCM – Enquadramento IBS / CBS</h2>
 
     <p><strong>Base:</strong> CSV completo embarcado (LC 214/2025)</p>
@@ -1873,6 +1909,63 @@ function consultar() {
     resultado.innerHTML = html;
 }
 </script>
+
+// ===============================
+// BASE DE USUÁRIOS
+// ===============================
+const usuarios = [
+    { user: "analyst", senha: "123456", nome: "Analyst Gestão" },
+    { user: "cliente1", senha: "cliente123", nome: "Cliente A" },
+    { user: "cliente2", senha: "cliente456", nome: "Cliente B" }
+];
+
+// ===============================
+// LOGIN
+// ===============================
+function login() {
+    const u = document.getElementById("loginUser").value.trim();
+    const p = document.getElementById("loginPass").value.trim();
+
+    const encontrado = usuarios.find(x => x.user === u && x.senha === p);
+
+    if (encontrado) {
+        localStorage.setItem("usuarioLogado", JSON.stringify(encontrado));
+        iniciarSessao();
+    } else {
+        document.getElementById("loginErro").innerText = "Usuário ou senha inválidos";
+    }
+}
+
+// ===============================
+// INICIAR SESSÃO
+// ===============================
+function iniciarSessao() {
+    const user = localStorage.getItem("usuarioLogado");
+    if (!user) return;
+
+    const dados = JSON.parse(user);
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("app").style.display = "block";
+
+    console.log("Usuário logado:", dados.nome);
+}
+
+// ===============================
+// LOGOUT
+// ===============================
+function logout() {
+    localStorage.removeItem("usuarioLogado");
+    location.reload();
+}
+
+// ===============================
+// AUTO LOGIN
+// ===============================
+iniciarSessao();
+
+
+
+
 
 </body>
 </html>
