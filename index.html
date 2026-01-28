@@ -1925,13 +1925,13 @@ const usuarios = [
 // LOGIN
 // ===============================
 function login() {
-    const u = document.getElementById("loginUser").value.trim();
+    const u = document.getElementById("loginUser").value.trim().toLowerCase();
     const p = document.getElementById("loginPass").value.trim();
 
     console.log("Tentativa:", u, p);
 
     const encontrado = usuarios.find(
-        x => x.user === u && x.senha === p
+        x => x.user.toLowerCase() === u && x.senha === p
     );
 
     if (encontrado) {
@@ -1979,6 +1979,7 @@ function logout() {
 
 </body>
 </html>
+
 
 
 
